@@ -15,7 +15,7 @@ obs.subscribe(console.log)
 obs.subscribe(console.log)
 
 function getSubject () {
-    const sub = new Subject
+    const sub = new Subject()
     setTimeout(() => {
         console.log('#2 - Subject')
         sub.next(Math.random())

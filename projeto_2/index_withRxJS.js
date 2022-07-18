@@ -1,7 +1,7 @@
 const _ = require('lodash')
 const path = require('path')
 const fn = require('./funcoes')
-const { toArray, map } = require('rxjs/operators')
+const { toArray, map, groupBy, mergeMap } = require('rxjs/operators')
 
 
 const caminhos = path.join(__dirname, '..', 'dados', 'legendas')
@@ -21,9 +21,10 @@ fn.lerDiretorio(caminhos)
         fn.separarTextoPor(' '),
         fn.removerElementosSeVazio(),
         fn.removerElementosSeNumero(),
+        groupBy(el => el),
+        mergeMap(grupo => grupo.pipe(toArray())),
+        map(palavras => ({chave: palavras[0], valor: palavras.length})),
         toArray(),
-        fn.agruparPalavras(),
         map(array => _.sortBy(array, el => -el.valor))
-        // fn.palavraOrdenadaAttrNum('valor', 'desc')
     )
     .subscribe(console.log)

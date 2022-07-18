@@ -1,19 +1,6 @@
 const fs = require('fs')
 const path = require('path')
 const { Observable } = require('rxjs')
-// const regex = e => e.match(/\S+legendas_(\d){2}.srt/g)
-
-function composicao (...fns) {
-    return function(valor) {
-        return fns.reduce(async (acc, fn) => {
-            if(Promise.resolve(acc) === acc){
-                return fn(await acc)
-            }else {
-                return fn(acc)
-            }
-        }, valor)
-    }
-}
 
 function lerDiretorio(caminho){
     return new Observable(subscriber => {
@@ -41,10 +28,6 @@ function lerArquivo() {
     }))
 }
 
-function lerArquivos(caminhos) {
-    return Promise.all(caminhos.map(caminho => lerArquivo(caminho)))
-}
-
 function elementosTerminadosCom(padrao) {
     return createNewPipiableOperator(subscriber => ({
         next(texto){
@@ -65,23 +48,6 @@ function removerElementosSeVazio () {
     }))
 }
 
-function removerElementosSeIncluir(padrao) {
-    return createNewPipiableOperator(subscriber => ({
-        next(texto) {
-            if(!texto.includes(padrao)){
-                subscriber.next(texto)
-            }
-        }
-    }))
-}
-
-// function removerElementosSeIncluir (padrao) {
-//     return function (array) {
-//         return array.filter(el => !el.includes(padrao))
-//     }
-// }
-
-// o JS retorna false se comparar NaN com outro NaN (57. Remover Linhas com Numeros JS - Funcional)
 function removerElementosSeNumero () {
     return createNewPipiableOperator(subscriber => ({
         next(texto) {
@@ -92,13 +58,6 @@ function removerElementosSeNumero () {
         }
     }))
 }
-
-// function removerElementosSeNumero (array) {
-//     return array.filter(el => {
-//         const num = parseInt(el.trim())
-//         return num !== num
-//     })
-// }
 
 function removerSimbolos(simbolos){
     return createNewPipiableOperator(subscriber => ({
@@ -111,28 +70,6 @@ function removerSimbolos(simbolos){
     }))
 }
 
-// function removerSimbolos(simbolos) {
-//     return function (array) {
-//         return array.map(el => {
-            // return simbolos.reduce((acc, simbolo) => {
-            //     return acc.split(simbolo).join('')
-            // }, el)
-//         })
-//     }
-// }
-
-function mesclarElementos () {
-    return createNewPipiableOperator(subscriber => ({
-        next(el) {
-            subscriber.next(el.join(' '))
-        }
-    }))
-}
-
-// function mesclarElementos (array) {
-//     return array.join(' ')
-// }
-
 function separarTextoPor (simbolo) {
     return createNewPipiableOperator(subscriber => ({
         next(texto) {
@@ -140,12 +77,6 @@ function separarTextoPor (simbolo) {
         }
     }))
 }
-
-// function separarTextoPor(simbolo) {
-//     return function(texto) {
-//         return texto.split(simbolo)
-//     }
-// }
 
 function agruparPalavras () {
     return createNewPipiableOperator(subscriber => ({
@@ -183,16 +114,6 @@ function createNewPipiableOperator(OperatorFn) {
         })
     }
 }
-
-
-// function removerNumeros (array) {
-//     return array.filter(el => {
-//         if(!el.match(/\d+\b\r$/g)) {
-//             return el
-//         }
-//     })
-// }
-
 
 module.exports = {
     lerDiretorio,
